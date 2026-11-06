@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 import plotly.express as px
-
+from pathlib import Path
 from careflow.data import load_workbook, validate_data
 from careflow.analytics import (department_metrics, overall_metrics, journey_metrics,
                                 hourly_profile, transition_summary, queue_scenario)
@@ -23,21 +23,7 @@ st.title("CareFlow")
 st.subheader("Intelligent Hospital Operations & Patient Flow Optimisation Platform")
 st.caption("A Python-based analytics and decision-support prototype for hospital operations.")
 
-with st.sidebar:
-    st.header("Data source")
-    uploaded = st.file_uploader("Upload HMIS Excel workbook", type=["xlsx"])
-    st.info("Upload: DELIVERABLE 3 - HMIS DATA.xlsx")
-    st.caption("The app analyses anonymised operational records. Do not upload identifiable patient or clinical data.")
 
-@st.cache_data(show_spinner=False)
-def load_data(file_bytes):
-    from io import BytesIO
-    return load_workbook(BytesIO(file_bytes))
-
-if uploaded is None:
-    st.warning("Upload the HMIS Excel workbook to start the analysis.")
-    st.markdown("**Expected sheets:** Patient Flow Data, Queue Summary, Directed Graph Edges and Journey Summary.")
-    st.stop()
 
 try:
     data = load_data(uploaded.getvalue())
