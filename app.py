@@ -42,11 +42,11 @@ else:
         st.error("Default HMIS workbook not found in the GitHub repository.")
         st.stop()
     workbook_bytes = workbook_path.read_bytes()
-
-flow = data["flow"].copy()
-queue = data["queue"].copy()
-edges = data["edges"].copy()
-journeys = data["journeys"].copy()
+try:
+    data = load_data(workbook_bytes)
+except Exception as exc:
+    st.error(f"Could not load workbook: {exc}")
+    st.stop()
 
 flow = data["flow"].copy()
 queue = data["queue"].copy()
