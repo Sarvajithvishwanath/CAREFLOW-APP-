@@ -23,13 +23,30 @@ st.title("CareFlow")
 st.subheader("Intelligent Hospital Operations & Patient Flow Optimisation Platform")
 st.caption("A Python-based analytics and decision-support prototype for hospital operations.")
 
+with st.sidebar:
+    st.header("Data source")
+    uploaded = st.file_uploader("Upload another HMIS Excel workbook (optional)", type=["xlsx"])
+    st.info("Default data: DELIVERABLE 3 - HMIS DATA.xlsx")
+    st.caption("The app analyses anonymised operational records. Do not upload identifiable patient or clinical data.")
 
+@st.cache_data(show_spinner=False)
+def load_data(file_bytes):
+    from io import BytesIO
+    return load_workbook(BytesIO(file_bytes))
 
-try:
-    data = load_data(uploaded.getvalue())
-except Exception as exc:
-    st.error(f"Could not load workbook: {exc}")
-    st.stop()
+if uploaded is not None:
+    workbook_bytes = uploaded.getvalue()
+else:
+    workbook_path = (Path(__file__).resolve().parent / "DELIVERABLE 3 - HMIS DATA.xlsx")
+    if not workbook_path.exists():
+        st.error("Default HMIS workbook not found in the GitHub repository.")
+        st.stop()
+    workbook_bytes = workbook_path.read_bytes()
+
+flow = data["flow"].copy()
+queue = data["queue"].copy()
+edges = data["edges"].copy()
+journeys = data["journeys"].copy()
 
 flow = data["flow"].copy()
 queue = data["queue"].copy()
